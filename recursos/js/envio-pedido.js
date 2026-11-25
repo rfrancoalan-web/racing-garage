@@ -51,6 +51,10 @@ export function armarTextoPedido(pedido) {
         texto = texto + "- " + item.nombre + " x" + item.cantidad + " = $ " + (item.precio * item.cantidad).toLocaleString("es-AR") + "\n";
     });
 
+    if (pedido.descuento > 0) {
+        texto = texto + "\nDescuento transferencia (10%): - $ " + pedido.descuento.toLocaleString("es-AR");
+    }
+
     texto = texto + "\nTotal: $ " + pedido.total.toLocaleString("es-AR");
     return texto;
 }

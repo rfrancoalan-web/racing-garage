@@ -36,7 +36,7 @@
         codigo postal
         metodo de pago
         -->
-        <form class="formulario" action="./confirmacion.html" method="post" aria-label="Datos de envío y pago">
+        <form class="formulario" novalidate action="./confirmacion.html" method="post" aria-label="Datos de envío y pago">
             <h2>Datos de envío</h2>
             <label for="id-nombre">Nombre completo</label>
             <input type="text" name="nombre" id="id-nombre" required minlength="3" maxlength="60" autocomplete="name" aria-required="true" placeholder="Ej: Juan Pérez">
@@ -45,7 +45,7 @@
             <input type="email" name="email" id="id-email" required autocomplete="email" aria-required="true" placeholder="juan@ejemplo.com">
 
             <label for="id-telefono">Teléfono</label>
-            <input type="tel" name="telefono" id="id-telefono" required pattern="[0-9 \-]{8,15}" title="Solo números, entre 8 y 13 dígitos" autocomplete="tel" aria-required="true" placeholder="Ej: 3511234567">
+            <input type="tel" name="telefono" id="id-telefono" required pattern="[0-9 \-]{8,17}" title="Entre 8 y 13 números (podés usar espacios o guiones)" autocomplete="tel" aria-required="true" placeholder="Ej: 3511234567">
 
             <label for="id-direccion">Dirección</label>
             <input type="text" name="direccion" id="id-direccion" required minlength="5" autocomplete="street-address" aria-required="true" placeholder="Calle y número">
@@ -91,7 +91,7 @@
     <footer class="pie-principal">
         <ul class="pie-lista">
             <li>
-                <a href="https://instagram.com/@racinggarage" target="_blank" aria-label="Seguinos en Instagram, se abre en una pestaña nueva">
+                <a href="https://instagram.com/racinggarage" target="_blank" aria-label="Seguinos en Instagram, se abre en una pestaña nueva">
                     @racinggarage
                 </a>
             </li>

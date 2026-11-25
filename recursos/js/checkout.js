@@ -4,6 +4,7 @@
 import { leerCarrito, vaciarCarrito, calcularTotal } from "./carrito.js";
 import { mostrarNotificacion } from "./notificaciones.js";
 import { validarCampo, esEmailValido, esTelefonoValido, esCodigoPostalValido, tieneLargoMinimo } from "./validaciones.js";
+import { formatearPrecio } from "./utilidades.js";
 import { emailConfigurado, enviarEmail, armarTextoPedido } from "./envio-pedido.js";
 
 const formulario = document.querySelector(".formulario");
@@ -13,6 +14,32 @@ const inputTelefono = document.querySelector("#id-telefono");
 const inputDireccion = document.querySelector("#id-direccion");
 const inputCiudad = document.querySelector("#id-ciudad");
 const inputCodigoPostal = document.querySelector("#id-codigo-postal");
+const listaResumen = document.querySelector(".resumen-lista");
+
+// Descuento del 10% si paga por transferencia (si no, no hay descuento)
+function calcularDescuento(subtotal, metodo) {
+    if (metodo === "transferencia") {
+        return Math.round(subtotal * 0.1);
+    }
+    return 0;
+}
+
+// Dibuja el resumen del pedido con subtotal, descuento (si hay) y total
+function mostrarResumen() {
+    const carrito = leerCarrito();
+    const metodoElegido = document.querySelector('input[name="metodo-pago"]:checked');
+    const subtotal = calcularTotal(carrito);
+    const descuento = calcularDescuento(subtotal, metodoElegido.value);
+
+    let html = "<li><span>Subtotal</span> <span>" + formatearPrecio(subtotal) + "</span></li>";
+    if (descuento > 0) {
+        html = html + "<li><span>Descuento transferencia (10%)</span> <span>- " + formatearPrecio(descuento) + "</span></li>";
+    }
+    html = html + "<li><span>Envío</span> <span>Gratis</span></li>";
+    html = html + "<li><span>Total</span> <span>" + formatearPrecio(subtotal - descuento) + "</span></li>";
+
+    listaResumen.innerHTML = html;
+}
 
 // Revisa campo por campo. Devuelve true solo si TODOS están bien
 function validarFormulario() {
@@ -44,6 +71,8 @@ function validarFormulario() {
 function crearPedido(carrito) {
     const metodoElegido = document.querySelector('input[name="metodo-pago"]:checked');
     const numero = "RG-" + String(Date.now()).slice(-7);
+    const subtotal = calcularTotal(carrito);
+    const descuento = calcularDescuento(subtotal, metodoElegido.value);
 
     return {
         numero: numero,
@@ -52,7 +81,8 @@ function crearPedido(carrito) {
         telefono: inputTelefono.value.trim(),
         direccion: inputDireccion.value.trim() + ", " + inputCiudad.value.trim() + " (CP: " + inputCodigoPostal.value.trim() + ")",
         metodoPago: metodoElegido.value,
-        total: calcularTotal(carrito),
+        descuento: descuento,
+        total: subtotal - descuento,
         productos: carrito,
         emailEnviado: false
     };
@@ -72,6 +102,15 @@ async function intentarEnviarEmail(pedido) {
         mostrarNotificacion("No pudimos enviar el email, pero tu pedido quedó registrado.", "warning");
     }
 }
+
+// Al cambiar el método de pago se recalcula el resumen
+formulario.addEventListener("change", function (evento) {
+    if (evento.target.name === "metodo-pago") {
+        mostrarResumen();
+    }
+});
+
+mostrarResumen();
 
 formulario.addEventListener("submit", async function (evento) {
     evento.preventDefault();

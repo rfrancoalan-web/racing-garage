@@ -19,3 +19,9 @@ Usá la extensión **Live Server** de VS Code, o `python -m http.server` dentro 
 1. Subí esta carpeta a un repositorio de GitHub (el `index.html` debe estar en la raíz).
 2. En https://vercel.com → Add New → Project → importá el repo.
 3. Framework Preset: **Other**. Sin comandos de build. Deploy.
+
+## Tests y CI (GitHub Actions)
+- `tests/validaciones.test.js` → pruebas unitarias con `node:test` (sin librerías).
+- `.github/workflows/tests.yml` → corre `node --test` en cada push.
+- `package.json` con `"type": "module"` → permite que Node interprete los `import`.
+- Para correrlos en tu computadora: `node --test`
